@@ -1,0 +1,69 @@
+# BEMS Git Ignore Rules
+# Best ERP Manufacturing System
+
+# Logs
+logs/*.log
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Configuration files with sensitive data
+config/local.php
+config/production.php
+.env
+.env.local
+.env.production
+
+# Uploaded files and documents
+uploads/
+documents/private/
+temp/
+
+# Cache files
+cache/
+tmp/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# PHP specific
+vendor/
+composer.phar
+composer.lock
+
+# Backup files
+*.bak
+*.backup
+*.sql
+
+# Testing
+coverage/
+.phpunit.result.cache
+
+# Development tools
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Custom BEMS ignores
+database/backups/
+reports/exports/
+label_templates/private/
