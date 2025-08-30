@@ -20,6 +20,9 @@ require_once dirname(__DIR__) . '/config/app.php';
 require_once dirname(__DIR__) . '/config/database.php';
 require_once dirname(__DIR__) . '/app/controllers/AuthController.php';
 require_once dirname(__DIR__) . '/app/controllers/UserController.php';
+require_once dirname(__DIR__) . '/app/controllers/InventoryController.php';
+require_once dirname(__DIR__) . '/app/controllers/MaterialsController.php';
+require_once dirname(__DIR__) . '/app/controllers/LocationsController.php';
 require_once dirname(__DIR__) . '/app/middleware/AuthMiddleware.php';
 require_once dirname(__DIR__) . '/app/middleware/RoleMiddleware.php';
 require_once dirname(__DIR__) . '/app/middleware/CSRFMiddleware.php';
@@ -159,6 +162,124 @@ class ApiRouter {
             [AuthMiddleware::class, 'handle'],
             [RoleMiddleware::class, 'managerOrHigher'],
             [CSRFMiddleware::class, 'handle']
+        ]);
+        
+        // ==========================================
+        // INVENTORY MANAGEMENT ROUTES - Phase 1
+        // ==========================================
+        
+        // Inventory operations
+        $this->post("$apiBase/inventory/receive", [InventoryController::class, 'receive'], [
+            [AuthMiddleware::class, 'handle'],
+            [CSRFMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/inventory", [InventoryController::class, 'getInventory'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/inventory/{inv_tag}", [InventoryController::class, 'getInventoryByTag'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->post("$apiBase/inventory/{inv_tag}/move", [InventoryController::class, 'moveInventory'], [
+            [AuthMiddleware::class, 'handle'],
+            [CSRFMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->post("$apiBase/inventory/{inv_tag}/consume", [InventoryController::class, 'consumeInventory'], [
+            [AuthMiddleware::class, 'handle'],
+            [CSRFMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/inventory/fifo/{material_number}", [InventoryController::class, 'getFifoInventory'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/inventory/summary/location", [InventoryController::class, 'getLocationSummary'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/inventory/alerts/expiring", [InventoryController::class, 'getExpiringAlerts'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        // Materials master data
+        $this->get("$apiBase/materials", [MaterialsController::class, 'getMaterials'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/materials/dropdown", [MaterialsController::class, 'getDropdownMaterials'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/materials/categories", [MaterialsController::class, 'getCategories'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/materials/{material_number}", [MaterialsController::class, 'getMaterial'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->post("$apiBase/materials", [MaterialsController::class, 'createMaterial'], [
+            [AuthMiddleware::class, 'handle'],
+            [RoleMiddleware::class, 'adminOnly'],
+            [CSRFMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->put("$apiBase/materials/{material_number}", [MaterialsController::class, 'updateMaterial'], [
+            [AuthMiddleware::class, 'handle'],
+            [RoleMiddleware::class, 'adminOnly'],
+            [CSRFMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        // Locations master data
+        $this->get("$apiBase/locations", [LocationsController::class, 'getLocations'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/locations/dropdown", [LocationsController::class, 'getDropdownLocations'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/locations/types", [LocationsController::class, 'getLocationTypes'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/locations/{location_code}", [LocationsController::class, 'getLocation'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->post("$apiBase/locations", [LocationsController::class, 'createLocation'], [
+            [AuthMiddleware::class, 'handle'],
+            [RoleMiddleware::class, 'adminOnly'],
+            [CSRFMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->put("$apiBase/locations/{location_code}", [LocationsController::class, 'updateLocation'], [
+            [AuthMiddleware::class, 'handle'],
+            [RoleMiddleware::class, 'adminOnly'],
+            [CSRFMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
         ]);
         
         // Health check endpoint
