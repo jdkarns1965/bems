@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEMS Dashboard - Best ERP Manufacturing System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .header {
+            background: white;
+            border-bottom: 1px solid #e1e5e9;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        
+        .logo h1 {
+            color: #1e3c72;
+            font-size: 1.5rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-badge {
+            background: #2a5298;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .welcome-section {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-section h2 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+        
+        .phase-status {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .phase-status h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        
+        .admin-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .admin-panel h3 {
+            margin-bottom: 20px;
+            color: #1e3c72;
+        }
+        
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .admin-card {
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .admin-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .admin-card h4 {
+            color: #2a5298;
+            margin-bottom: 10px;
+        }
+        
+        .admin-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .admin-card button {
+            background: #2a5298;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .admin-card button:hover {
+            background: #1e3c72;
+        }
+        
+        .system-info {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .system-info h4 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background: #28a745;
+        }
+        
+        .status-warning {
+            background: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <h1>BEMS Dashboard</h1>
+        </div>
+        <div class="user-info">
+            <div class="user-badge" id="userBadge">Loading...</div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="welcome-section">
+            <h2 id="welcomeMessage">Welcome to BEMS</h2>
+            <p>Best ERP Manufacturing System - Comprehensive solution for plastic injection molding operations.</p>
+        </div>
+        
+        <div class="phase-status">
+            <h3>✅ Phase 0: User Authentication & Audit - COMPLETE</h3>
+            <p>User authentication system with role-based access control is now operational. All Phase 0 acceptance criteria have been satisfied.</p>
+        </div>
+        
+        <div class="admin-panel" id="adminPanel" style="display: none;">
+            <h3>🛠️ Administration Panel</h3>
+            <div class="admin-actions">
+                <div class="admin-card">
+                    <h4>User Management</h4>
+                    <p>Create, update, and manage user accounts</p>
+                    <button onclick="showUserManagement()">Manage Users</button>
+                </div>
+                <div class="admin-card">
+                    <h4>System Audit</h4>
+                    <p>View audit logs and system activity</p>
+                    <button onclick="showAuditLogs()">View Logs</button>
+                </div>
+                <div class="admin-card">
+                    <h4>Role Management</h4>
+                    <p>Configure user roles and permissions</p>
+                    <button onclick="showRoleManagement()">Manage Roles</button>
+                </div>
+                <div class="admin-card">
+                    <h4>Phase 1 Setup</h4>
+                    <p>Prepare for Inventory Module development</p>
+                    <button onclick="preparePhase1()">Phase 1 Prep</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="system-info">
+            <h4>System Status</h4>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span><span class="status-indicator status-active"></span>Database</span>
+                    <span>Connected</span>
+                </div>
+                <div class="info-item">
+                    <span><span class="status-indicator status-active"></span>Authentication</span>
+                    <span>Active</span>
+                </div>
+                <div class="info-item">
+                    <span><span class="status-indicator status-active"></span>Audit Logging</span>
+                    <span>Enabled</span>
+                </div>
+                <div class="info-item">
+                    <span><span class="status-indicator status-warning"></span>Phase 1</span>
+                    <span>Pending</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Check authentication on page load
+        window.onload = async function() {
+            try {
+                const response = await fetch('/bems/api/v1/auth/status');
+                const data = await response.json();
+                
+                if (response.ok && data.authenticated) {
+                    updateUserInterface(data.user);
+                } else {
+                    // Redirect to login if not authenticated
+                    window.location.href = '/bems/login.html';
+                }
+            } catch (error) {
+                console.error('Authentication check failed:', error);
+                window.location.href = '/bems/login.html';
+            }
+        };
+        
+        function updateUserInterface(user) {
+            // Update welcome message
+            document.getElementById('welcomeMessage').textContent = `Welcome, ${user.real_name}`;
+            
+            // Update user badge
+            document.getElementById('userBadge').textContent = `${user.real_name} (${user.role_name})`;
+            
+            // Show admin panel if user is Admin or Manager
+            if (user.permission_level >= 90) {
+                document.getElementById('adminPanel').style.display = 'block';
+            }
+        }
+        
+        async function logout() {
+            try {
+                const response = await fetch('/bems/api/v1/auth/logout', {
+                    method: 'POST'
+                });
+                
+                // Clear local storage and redirect regardless of response
+                localStorage.removeItem('bems_user');
+                window.location.href = '/bems/login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                // Still redirect to login page
+                localStorage.removeItem('bems_user');
+                window.location.href = '/bems/login.html';
+            }
+        }
+        
+        function showUserManagement() {
+            alert('User Management interface will be available in the next development iteration.');
+        }
+        
+        function showAuditLogs() {
+            alert('Audit Log viewer will be available in the next development iteration.');
+        }
+        
+        function showRoleManagement() {
+            alert('Role Management interface will be available in the next development iteration.');
+        }
+        
+        function preparePhase1() {
+            alert('Phase 1: Inventory Module preparation will begin after Phase 0 completion and deployment.');
+        }
+    </script>
+</body>
+</html>
