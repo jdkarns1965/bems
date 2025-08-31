@@ -211,7 +211,7 @@
                     localStorage.setItem('bems_user', JSON.stringify(data.user));
                     
                     setTimeout(() => {
-                        window.location.href = '/bems/working_dashboard.html';
+                        window.location.href = '/bems/public/dashboard.html';
                     }, 1500);
                 } else {
                     showAlert(data.message || 'Login failed. Please check your credentials.', 'error');

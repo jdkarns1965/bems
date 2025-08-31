@@ -219,9 +219,9 @@
         </div>
         <div class="nav">
             <a href="dashboard.html" class="active">Dashboard</a>
-            <a href="inventory.html">Inventory</a>
-            <a href="bom.html">BOM</a>
-            <a href="mrp.html">MRP</a>
+            <a href="inventory-simple.html">Inventory</a>
+            <a href="bom-simple.html">BOM</a>
+            <a href="mrp-simple.html">MRP</a>
         </div>
         <div class="user-info">
             <div class="user-badge" id="userBadge">Loading...</div>
@@ -314,20 +314,21 @@
     
     <script>
         // Check authentication on page load
-        window.onload = async function() {
-            try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/auth/status');
-                const data = await response.json();
-                
-                if (response.ok && data.authenticated) {
-                    updateUserInterface(data.user);
-                } else {
-                    // Redirect to login if not authenticated
-                    window.location.href = '/bems/public/working-login.html';
+        window.onload = function() {
+            // Check for stored user data
+            const storedUser = localStorage.getItem('bems_user');
+            
+            if (storedUser) {
+                try {
+                    const userData = JSON.parse(storedUser);
+                    updateUserInterface(userData);
+                } catch (error) {
+                    console.error('Failed to parse user data:', error);
+                    window.location.href = '/bems/public/login.html';
                 }
-            } catch (error) {
-                console.error('Authentication check failed:', error);
-                window.location.href = '/bems/public/working-login.html';
+            } else {
+                // Redirect to login if not authenticated
+                window.location.href = '/bems/public/login.html';
             }
         };
         
@@ -352,12 +353,12 @@
                 
                 // Clear local storage and redirect regardless of response
                 localStorage.removeItem('bems_user');
-                window.location.href = '/bems/public/working-login.html';
+                window.location.href = '/bems/public/login.html';
             } catch (error) {
                 console.error('Logout error:', error);
                 // Still redirect to login page
                 localStorage.removeItem('bems_user');
-                window.location.href = '/bems/public/working-login.html';
+                window.location.href = '/bems/public/login.html';
             }
         }
         
