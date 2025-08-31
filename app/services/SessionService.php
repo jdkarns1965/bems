@@ -29,15 +29,18 @@ class SessionService {
      * Initialize secure session configuration
      */
     private function initializeSecureSession() {
-        // Configure secure session settings
-        ini_set('session.cookie_httponly', '1');
-        ini_set('session.use_only_cookies', '1');
-        ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? '1' : '0');
-        ini_set('session.cookie_samesite', 'Strict');
-        ini_set('session.gc_maxlifetime', $this->sessionTimeout);
-        
-        // Set session name
-        session_name('BEMS_SESSION');
+        // Only configure session settings if session is not already active
+        if (session_status() === PHP_SESSION_NONE) {
+            // Configure secure session settings
+            ini_set('session.cookie_httponly', '1');
+            ini_set('session.use_only_cookies', '1');
+            ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? '1' : '0');
+            ini_set('session.cookie_samesite', 'Strict');
+            ini_set('session.gc_maxlifetime', $this->sessionTimeout);
+            
+            // Set session name
+            session_name('BEMS_SESSION');
+        }
     }
     
     /**

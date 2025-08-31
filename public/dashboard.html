@@ -27,6 +27,25 @@
             height: 60px;
         }
         
+        .nav {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav a {
+            text-decoration: none;
+            color: #2a5298;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .nav a:hover, .nav a.active {
+            background: #2a5298;
+            color: white;
+        }
+        
         .logo h1 {
             color: #1e3c72;
             font-size: 1.5rem;
@@ -196,7 +215,13 @@
 <body>
     <div class="header">
         <div class="logo">
-            <h1>BEMS Dashboard</h1>
+            <h1>BEMS</h1>
+        </div>
+        <div class="nav">
+            <a href="dashboard.html" class="active">Dashboard</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="bom.html">BOM</a>
+            <a href="mrp.html">MRP</a>
         </div>
         <div class="user-info">
             <div class="user-badge" id="userBadge">Loading...</div>
@@ -213,6 +238,21 @@
         <div class="phase-status">
             <h3>✅ Phase 0: User Authentication & Audit - COMPLETE</h3>
             <p>User authentication system with role-based access control is now operational. All Phase 0 acceptance criteria have been satisfied.</p>
+        </div>
+        
+        <div class="phase-status">
+            <h3>✅ Phase 1: Inventory Module - COMPLETE</h3>
+            <p>Complete inventory management with materials, locations, and FIFO logic is now operational.</p>
+        </div>
+        
+        <div class="phase-status">
+            <h3>✅ Phase 2: BOM Module - COMPLETE</h3>
+            <p>Bill of Materials management with multi-level explosion and cost rollup is now operational.</p>
+        </div>
+        
+        <div class="phase-status">
+            <h3>✅ Phase 3: MRP Module - COMPLETE</h3>
+            <p>Material Requirements Planning with time-phased requirements, planned orders, and master scheduling is now operational.</p>
         </div>
         
         <div class="admin-panel" id="adminPanel" style="display: none;">
@@ -234,9 +274,9 @@
                     <button onclick="showRoleManagement()">Manage Roles</button>
                 </div>
                 <div class="admin-card">
-                    <h4>Phase 1 Setup</h4>
-                    <p>Prepare for Inventory Module development</p>
-                    <button onclick="preparePhase1()">Phase 1 Prep</button>
+                    <h4>System Complete</h4>
+                    <p>All core manufacturing modules operational</p>
+                    <button onclick="showSystemStatus()">View Status</button>
                 </div>
             </div>
         </div>
@@ -257,8 +297,16 @@
                     <span>Enabled</span>
                 </div>
                 <div class="info-item">
-                    <span><span class="status-indicator status-warning"></span>Phase 1</span>
-                    <span>Pending</span>
+                    <span><span class="status-indicator status-active"></span>Phase 1</span>
+                    <span>Complete</span>
+                </div>
+                <div class="info-item">
+                    <span><span class="status-indicator status-active"></span>Phase 2</span>
+                    <span>Complete</span>
+                </div>
+                <div class="info-item">
+                    <span><span class="status-indicator status-active"></span>Phase 3</span>
+                    <span>Complete</span>
                 </div>
             </div>
         </div>
@@ -268,18 +316,18 @@
         // Check authentication on page load
         window.onload = async function() {
             try {
-                const response = await fetch('/bems/api/v1/auth/status');
+                const response = await fetch('/bems/public/index.php?route=/api/v1/auth/status');
                 const data = await response.json();
                 
                 if (response.ok && data.authenticated) {
                     updateUserInterface(data.user);
                 } else {
                     // Redirect to login if not authenticated
-                    window.location.href = '/bems/login.html';
+                    window.location.href = '/bems/public/working-login.html';
                 }
             } catch (error) {
                 console.error('Authentication check failed:', error);
-                window.location.href = '/bems/login.html';
+                window.location.href = '/bems/public/working-login.html';
             }
         };
         
@@ -298,18 +346,18 @@
         
         async function logout() {
             try {
-                const response = await fetch('/bems/api/v1/auth/logout', {
+                const response = await fetch('/bems/public/index.php?route=/api/v1/auth/logout', {
                     method: 'POST'
                 });
                 
                 // Clear local storage and redirect regardless of response
                 localStorage.removeItem('bems_user');
-                window.location.href = '/bems/login.html';
+                window.location.href = '/bems/public/working-login.html';
             } catch (error) {
                 console.error('Logout error:', error);
                 // Still redirect to login page
                 localStorage.removeItem('bems_user');
-                window.location.href = '/bems/login.html';
+                window.location.href = '/bems/public/working-login.html';
             }
         }
         
@@ -325,8 +373,8 @@
             alert('Role Management interface will be available in the next development iteration.');
         }
         
-        function preparePhase1() {
-            alert('Phase 1: Inventory Module preparation will begin after Phase 0 completion and deployment.');
+        function showSystemStatus() {
+            alert('✅ BEMS Complete!\n\nPhase 0: Authentication & Audit - COMPLETE\nPhase 1: Inventory Management - COMPLETE\nPhase 2: Bill of Materials (BOM) - COMPLETE\nPhase 3: Material Requirements Planning (MRP) - COMPLETE\n\nAll core manufacturing modules are now operational!');
         }
     </script>
 </body>

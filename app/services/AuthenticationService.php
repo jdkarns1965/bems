@@ -475,9 +475,13 @@ class AuthenticationService {
             $stmt->bindParam(':record_id', $recordId);
             $stmt->bindParam(':old_values', $oldValues);
             $stmt->bindParam(':new_values', $newValues);
-            $stmt->bindParam(':ip_address', $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1');
-            $stmt->bindParam(':session_id', $_SERVER['PHP_SELF'] ?? null);
-            $stmt->bindParam(':user_agent', $_SERVER['HTTP_USER_AGENT'] ?? '');
+            $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+            $sessionId = $_SERVER['PHP_SELF'] ?? null;
+            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+            
+            $stmt->bindParam(':ip_address', $ipAddress);
+            $stmt->bindParam(':session_id', $sessionId);
+            $stmt->bindParam(':user_agent', $userAgent);
             $stmt->bindParam(':severity_level', $severity);
             $stmt->execute();
             

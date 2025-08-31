@@ -297,10 +297,10 @@
             <h1>BEMS Inventory</h1>
         </div>
         <div class="nav">
-            <a href="/bems/dashboard.html">Dashboard</a>
-            <a href="/bems/inventory.html" class="active">Inventory</a>
-            <a href="#" onclick="showPhase2Notice()">BOM</a>
-            <a href="#" onclick="showPhase2Notice()">MRP</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="inventory.html" class="active">Inventory</a>
+            <a href="bom.html">BOM</a>
+            <a href="mrp.html">MRP</a>
         </div>
         <div class="user-info">
             <div class="user-badge" id="userBadge">Loading...</div>
@@ -417,25 +417,25 @@
         
         async function checkAuthentication() {
             try {
-                const response = await fetch('/bems/api/v1/auth/status');
+                const response = await fetch('/bems/public/index.php?route=/api/v1/auth/status');
                 const data = await response.json();
                 
                 if (response.ok && data.authenticated) {
                     currentUser = data.user;
                     document.getElementById('userBadge').textContent = `${data.user.real_name} (${data.user.role_name})`;
                 } else {
-                    window.location.href = '/bems/login.html';
+                    window.location.href = '/bems/public/working-login.html';
                 }
             } catch (error) {
                 console.error('Authentication check failed:', error);
-                window.location.href = '/bems/login.html';
+                window.location.href = '/bems/public/working-login.html';
             }
         }
         
         async function loadMasterData() {
             try {
                 // Load materials
-                const materialsResponse = await fetch('/bems/api/v1/materials');
+                const materialsResponse = await fetch('/bems/public/index.php?route=/api/v1/materials');
                 const materialsData = await materialsResponse.json();
                 
                 if (materialsResponse.ok) {
@@ -452,7 +452,7 @@
                 }
                 
                 // Load locations  
-                const locationsResponse = await fetch('/bems/api/v1/locations');
+                const locationsResponse = await fetch('/bems/public/index.php?route=/api/v1/locations');
                 const locationsData = await locationsResponse.json();
                 
                 if (locationsResponse.ok) {
@@ -474,7 +474,7 @@
         
         async function loadInventory() {
             try {
-                const response = await fetch('/bems/api/v1/inventory');
+                const response = await fetch('/bems/public/index.php?route=/api/v1/inventory');
                 const data = await response.json();
                 
                 if (response.ok) {
@@ -551,7 +551,7 @@
             });
             
             try {
-                const response = await fetch('/bems/api/v1/inventory/receive', {
+                const response = await fetch('/bems/public/index.php?route=/api/v1/inventory/receive', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -610,17 +610,17 @@
             alert(`Inventory details viewer will be available in the next iteration.\nINV Tag: ${invTag}`);
         }
         
-        function showPhase2Notice() {
-            alert('Phase 2 (BOM) and Phase 3 (MRP) modules will be available after Phase 1 deployment.');
+        function showPhase3Notice() {
+            alert('Phase 3 (MRP) module will be available after Phase 2 deployment.');
         }
         
         async function logout() {
             try {
-                await fetch('/bems/api/v1/auth/logout', { method: 'POST' });
-                window.location.href = '/bems/login.html';
+                await fetch('/bems/public/index.php?route=/api/v1/auth/logout', { method: 'POST' });
+                window.location.href = '/bems/public/working-login.html';
             } catch (error) {
                 console.error('Logout error:', error);
-                window.location.href = '/bems/login.html';
+                window.location.href = '/bems/public/working-login.html';
             }
         }
     </script>

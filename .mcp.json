@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio", 
+      "command": "mcp-server-playwright",
+      "args": [],
+      "env": {}
+    },
+    "database": {
+      "type": "stdio",
+      "command": "mcp-server-database", 
+      "args": [],
+      "env": {
+        "DATABASE_URL": "mysql://root:passgas1989@localhost:3306/BEMS"
+      }
+    },
+    "git": {
+      "type": "stdio",
+      "command": "mcp-server-git",
+      "args": [],
+      "env": {}
+    },
+    "filesystem": {
+      "type": "stdio", 
+      "command": "mcp-server-filesystem",
+      "args": ["/var/www/html/bems"],
+      "env": {}
+    },
+    "monitoring": {
+      "type": "stdio",
+      "command": "mcp-server-monitoring",
+      "args": [],
+      "env": {}
+    }
+  }
+}

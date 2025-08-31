@@ -1,40 +1,31 @@
-# BEMS Git Ignore Rules
-# Best ERP Manufacturing System
+# BEMS .gitignore
 
-# Logs
-logs/*.log
-*.log
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Configuration files with sensitive data
-config/local.php
-config/production.php
+# Sensitive Configuration
+config/database.php
 .env
 .env.local
 .env.production
 
-# Uploaded files and documents
-uploads/
-documents/private/
-temp/
+# Temporary Files
+cookies.txt
+*.tmp
+*.log
 
-# Cache files
-cache/
-tmp/
+# Playwright Test Results
+.playwright-mcp/
+test-results/
+playwright-report/
 
-# IDE and editor files
-.vscode/
-.idea/
+# PHP Dependencies
+vendor/
+composer.lock
+
+# Development Files
 *.swp
 *.swo
 *~
 
-# OS generated files
+# OS Generated Files
 .DS_Store
 .DS_Store?
 ._*
@@ -43,27 +34,22 @@ tmp/
 ehthumbs.db
 Thumbs.db
 
-# PHP specific
-vendor/
-composer.phar
-composer.lock
+# IDE Files
+.vscode/settings.json
+.idea/
+*.sublime-workspace
+*.sublime-project
 
-# Backup files
+# Test Files (temporary)
+test_*.php
+demo.php
+simple-*.php
+
+# Cache and Session Files
+cache/
+sessions/
+logs/
+
+# Backup Files
 *.bak
 *.backup
-*.sql
-
-# Testing
-coverage/
-.phpunit.result.cache
-
-# Development tools
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Custom BEMS ignores
-database/backups/
-reports/exports/
-label_templates/private/

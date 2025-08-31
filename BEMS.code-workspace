@@ -1,0 +1,134 @@
+{
+  "folders": [
+    {
+      "name": "BEMS Root",
+      "path": "."
+    },
+    {
+      "name": "Public Web",
+      "path": "./public"
+    },
+    {
+      "name": "Application Logic", 
+      "path": "./app"
+    },
+    {
+      "name": "Database Scripts",
+      "path": "./database"
+    },
+    {
+      "name": "Configuration",
+      "path": "./config"
+    },
+    {
+      "name": "Documentation",
+      "path": "./agents"
+    }
+  ],
+  "settings": {
+    "files.associations": {
+      "*.php": "php",
+      "*.html": "html",
+      "*.js": "javascript",
+      "*.css": "css",
+      "*.sql": "sql",
+      "*.md": "markdown"
+    },
+    "php.validate.enable": true,
+    "php.validate.executablePath": "/usr/bin/php",
+    "emmet.includeLanguages": {
+      "php": "html"
+    },
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "git.autofetch": true,
+    "git.enableSmartCommit": true
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-vscode.vscode-php",
+      "bmewburn.vscode-intelephense-client",
+      "ms-playwright.playwright",
+      "ms-vscode.vscode-mysql",
+      "formulahendry.auto-rename-tag",
+      "bradlc.vscode-tailwindcss",
+      "esbenp.prettier-vscode",
+      "ms-vscode.vscode-json"
+    ]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Start Apache",
+        "type": "shell",
+        "command": "sudo service apache2 start",
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "Start MySQL", 
+        "type": "shell",
+        "command": "sudo service mysql start",
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "Run PHP Tests",
+        "type": "shell",
+        "command": "php vendor/bin/phpunit",
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "Database Migration",
+        "type": "shell", 
+        "command": "php database/migrate.php",
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      }
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug BEMS PHP",
+        "type": "php",
+        "request": "launch",
+        "program": "${workspaceFolder}/public/index.php",
+        "cwd": "${workspaceFolder}/public",
+        "port": 9003,
+        "runtimeArgs": [
+          "-dxdebug.start_with_request=yes"
+        ],
+        "env": {
+          "XDEBUG_MODE": "debug,develop",
+          "XDEBUG_CONFIG": "client_port=9003"
+        }
+      }
+    ]
+  }
+}

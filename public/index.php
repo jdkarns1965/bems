@@ -23,6 +23,8 @@ require_once dirname(__DIR__) . '/app/controllers/UserController.php';
 require_once dirname(__DIR__) . '/app/controllers/InventoryController.php';
 require_once dirname(__DIR__) . '/app/controllers/MaterialsController.php';
 require_once dirname(__DIR__) . '/app/controllers/LocationsController.php';
+require_once dirname(__DIR__) . '/app/controllers/BomController.php';
+require_once dirname(__DIR__) . '/app/controllers/MrpController.php';
 require_once dirname(__DIR__) . '/app/middleware/AuthMiddleware.php';
 require_once dirname(__DIR__) . '/app/middleware/RoleMiddleware.php';
 require_once dirname(__DIR__) . '/app/middleware/CSRFMiddleware.php';
@@ -282,6 +284,72 @@ class ApiRouter {
             [RateLimitMiddleware::class, 'apiRateLimit']
         ]);
         
+        // BOM (Bill of Materials) routes
+        $this->get("$apiBase/bom", [BomController::class, 'listBoms'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->post("$apiBase/bom", [BomController::class, 'create'], [
+            [AuthMiddleware::class, 'handle'],
+            [CSRFMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/bom/{bom_id}/structure", [BomController::class, 'getStructure'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/bom/{bom_id}/cost", [BomController::class, 'getCostRollup'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->post("$apiBase/bom/component", [BomController::class, 'addComponent'], [
+            [AuthMiddleware::class, 'handle'],
+            [CSRFMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        // MRP (Material Requirements Planning) routes
+        $this->post("$apiBase/mrp/run", [MrpController::class, 'executePlanningRun'], [
+            [AuthMiddleware::class, 'handle'],
+            [CSRFMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/mrp/latest", [MrpController::class, 'getLatestRun'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/mrp/requirements", [MrpController::class, 'getRequirements'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/mrp/orders", [MrpController::class, 'getPlannedOrders'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/mrp/messages", [MrpController::class, 'getActionMessages'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->get("$apiBase/mrp/mps", [MrpController::class, 'getMasterProductionSchedule'], [
+            [AuthMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
+        $this->post("$apiBase/mrp/mps", [MrpController::class, 'createMpsEntry'], [
+            [AuthMiddleware::class, 'handle'],
+            [CSRFMiddleware::class, 'handle'],
+            [RateLimitMiddleware::class, 'apiRateLimit']
+        ]);
+        
         // Health check endpoint
         $this->get("$apiBase/health", function() {
             return [
@@ -350,10 +418,15 @@ class ApiRouter {
     public function route() {
         try {
             $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-            $uri = $_SERVER['REQUEST_URI'] ?? '/';
             
-            // Remove query string
-            $uri = strtok($uri, '?');
+            // Check if route is passed as query parameter (for when .htaccess doesn't work)
+            if (isset($_GET['route'])) {
+                $uri = '/' . ltrim($_GET['route'], '/');
+            } else {
+                $uri = $_SERVER['REQUEST_URI'] ?? '/';
+                // Remove query string
+                $uri = strtok($uri, '?');
+            }
             
             // Find matching route
             foreach ($this->routes as $route) {
@@ -516,7 +589,10 @@ class ApiRouter {
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
         
         if (strpos($contentType, 'application/json') !== false) {
-            $input = json_decode(file_get_contents('php://input'), true);
+            $rawInput = file_get_contents('php://input');
+            $input = json_decode($rawInput, true);
+            
+            
             return $input ?: [];
         }
         
@@ -586,6 +662,9 @@ class ApiRouter {
 // Initialize error handling
 set_error_handler([new ApiRouter(), 'handleError']);
 set_exception_handler([new ApiRouter(), 'handleException']);
+
+// Initialize session service before router to ensure proper session configuration
+$sessionService = new SessionService();
 
 // Create router instance and handle request
 $router = new ApiRouter();

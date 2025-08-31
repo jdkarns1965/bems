@@ -28,6 +28,7 @@ class AuthController {
      */
     public function login($input) {
         try {
+            
             // Validate required fields
             if (empty($input['clock_number']) || empty($input['password'])) {
                 return $this->jsonResponse([
@@ -50,8 +51,9 @@ class AuthController {
             );
             
             if ($result['success']) {
-                // Start PHP session and store user data
+                // Set secure session cookie parameters BEFORE starting session
                 if (session_status() === PHP_SESSION_NONE) {
+                    $this->setSecureSessionCookie();
                     session_start();
                 }
                 
@@ -61,9 +63,6 @@ class AuthController {
                 $_SESSION['session_id'] = $result['user']['session_id'];
                 $_SESSION['ip_address'] = $ipAddress;
                 $_SESSION['login_time'] = time();
-                
-                // Set secure session cookie parameters
-                $this->setSecureSessionCookie();
                 
                 return $this->jsonResponse([
                     'success' => true,
