@@ -1,10 +1,13 @@
 # BEMS .gitignore
 
 # Sensitive Configuration
-config/database.php
 .env
 .env.local
 .env.production
+.env.backup
+
+# Database config is no longer sensitive (uses env vars)
+# config/database.php - removed from gitignore
 
 # Temporary Files
 cookies.txt

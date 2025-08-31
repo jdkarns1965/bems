@@ -113,7 +113,7 @@ class MaterialsController {
             
             return $this->jsonResponse([
                 'success' => true,
-                'data' => $materials,
+                'materials' => $materials,
                 'pagination' => [
                     'total' => intval($total),
                     'limit' => $limit,
@@ -532,7 +532,7 @@ class MaterialsController {
             
             return $this->jsonResponse([
                 'success' => true,
-                'data' => $materials
+                'materials' => $materials
             ]);
             
         } catch (Exception $e) {

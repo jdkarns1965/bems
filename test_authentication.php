@@ -5,7 +5,11 @@
  */
 
 require_once 'config/database.php';
+
+// Start output buffering to prevent session header warnings
+ob_start();
 require_once 'app/services/SessionService.php';
+ob_end_clean();
 
 echo "=== BEMS Phase 0 Authentication System Test ===\n\n";
 

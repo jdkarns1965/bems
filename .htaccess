@@ -1,0 +1,31 @@
+# BEMS Apache Configuration
+# Enable URL rewriting for clean API endpoints
+
+RewriteEngine On
+
+# Allow access to public files
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Route API calls to index.php - handle both /bems/api/ and /api/ patterns
+RewriteRule ^api/(.*)$ public/index.php?route=api/$1 [QSA,L]
+
+# Also handle direct /bems/api/ calls for compatibility
+RewriteRule ^bems/api/(.*)$ public/index.php?route=api/$1 [QSA,L]
+
+# Default to public directory
+DirectoryIndex public/login.html
+
+# PHP settings
+<IfModule mod_php.c>
+    php_flag display_errors off
+    php_flag log_errors on
+    php_value error_log /var/www/html/bems/logs/php_errors.log
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>

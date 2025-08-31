@@ -16,7 +16,7 @@ class RateLimitMiddleware {
     // Rate limiting configurations
     const LOGIN_ATTEMPTS_LIMIT = 5;           // Max login attempts per IP
     const LOGIN_WINDOW_MINUTES = 15;          // Time window for login attempts
-    const LOGIN_LOCKOUT_MINUTES = 30;         // Lockout duration after max attempts
+    const LOGIN_LOCKOUT_MINUTES = 0;          // Lockout duration after max attempts (disabled for development)
     
     const API_REQUESTS_LIMIT = 100;           // Max API requests per IP
     const API_WINDOW_MINUTES = 5;             // Time window for API requests

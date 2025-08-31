@@ -129,7 +129,7 @@ class LocationsController {
             
             return $this->jsonResponse([
                 'success' => true,
-                'data' => $locations,
+                'locations' => $locations,
                 'pagination' => [
                     'total' => intval($total),
                     'limit' => $limit,
@@ -555,7 +555,7 @@ class LocationsController {
             
             return $this->jsonResponse([
                 'success' => true,
-                'data' => $locations
+                'locations' => $locations
             ]);
             
         } catch (Exception $e) {

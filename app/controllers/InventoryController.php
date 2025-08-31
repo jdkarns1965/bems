@@ -192,7 +192,7 @@ class InventoryController {
             
             return $this->jsonResponse([
                 'success' => true,
-                'data' => $inventory,
+                'inventory' => $inventory,
                 'pagination' => [
                     'total' => intval($total),
                     'limit' => $limit,
