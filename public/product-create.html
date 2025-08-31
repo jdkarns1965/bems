@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Product - BEMS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f3f4f6; color: #111827; }
+        
+        .header { background: white; border-bottom: 1px solid #e5e7eb; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; height: 64px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .logo h1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.75rem; font-weight: 700; }
+        .nav { display: flex; gap: 8px; }
+        .nav a { text-decoration: none; color: #6b7280; padding: 8px 16px; border-radius: 6px; font-weight: 500; transition: all 0.2s; }
+        .nav a:hover { background: #f3f4f6; color: #111827; }
+        .nav a.active { background: #6366f1; color: white; }
+        
+        #user-info { display: flex; align-items: center; gap: 12px; }
+        .user-name { font-weight: 600; color: #111827; }
+        .user-role { color: #6b7280; font-size: 0.875rem; }
+        .btn-logout { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.2s; }
+        .btn-logout:hover { background: #dc2626; }
+        
+        .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+        .page-title { font-size: 2rem; font-weight: 700; color: #111827; margin-bottom: 8px; }
+        .page-subtitle { color: #6b7280; margin-bottom: 32px; }
+        
+        .form-card { background: white; border-radius: 12px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .form-section { margin-bottom: 32px; }
+        .section-title { font-size: 1.125rem; font-weight: 600; color: #111827; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group.full-width { grid-column: span 2; }
+        
+        label { display: block; font-weight: 500; color: #374151; margin-bottom: 6px; font-size: 0.875rem; }
+        .required { color: #ef4444; }
+        input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.875rem; transition: all 0.2s; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        textarea { resize: vertical; min-height: 80px; }
+        
+        .btn { padding: 10px 24px; border-radius: 6px; font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; font-size: 0.875rem; }
+        .btn-primary { background: #6366f1; color: white; }
+        .btn-primary:hover { background: #4f46e5; }
+        .btn-secondary { background: white; color: #374151; border: 1px solid #d1d5db; }
+        .btn-secondary:hover { background: #f9fafb; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        
+        .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 32px; padding-top: 24px; border-top: 1px solid #e5e7eb; }
+        
+        .success-message, .error-message { padding: 16px; border-radius: 6px; margin-bottom: 20px; display: none; }
+        .success-message { background: #d1fae5; border: 1px solid #a7f3d0; color: #065f46; }
+        .error-message { background: #fee2e2; border: 1px solid #fecaca; color: #991b1b; }
+        
+        .part-number-section { border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #f9fafb; }
+        .part-number-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .part-number-title { font-weight: 600; color: #111827; }
+        .part-number-grid { display: grid; grid-template-columns: 150px 1fr 150px 80px 100px 50px; gap: 12px; align-items: end; }
+        .part-number-row { display: contents; }
+        
+        .help-text { font-size: 0.75rem; color: #6b7280; margin-top: 4px; line-height: 1.4; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><h1>BEMS</h1></div>
+        <div class="nav">
+            <a href="/bems/public/dashboard-enhanced.html">Dashboard</a>
+            <a href="/bems/public/inventory.html">Inventory</a>
+            <a href="/bems/public/products-list.html" class="active">Products</a>
+            <a href="/bems/public/bom.html">BOM</a>
+            <a href="/bems/public/mrp.html">MRP</a>
+        </div>
+        <div id="user-info"></div>
+    </div>
+    
+    <div class="container">
+        <h1 class="page-title">Create Product</h1>
+        <p class="page-subtitle">Define a new finished good product with multi-level part number cross-references</p>
+        
+        <div class="form-card">
+            <div id="success-message" class="success-message"></div>
+            <div id="error-message" class="error-message"></div>
+            
+            <form id="product-form">
+                <!-- Basic Product Information -->
+                <div class="form-section">
+                    <h3 class="section-title">Basic Product Information</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="internal_part_number">Internal Part Number</label>
+                            <input type="text" id="internal_part_number" name="internal_part_number" placeholder="Auto-generated if blank">
+                            <div class="help-text">Leave blank for auto-generated PROD##### number</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="product_family">Product Family</label>
+                            <input type="text" id="product_family" name="product_family" placeholder="e.g. Brackets, Housings">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="product_name">Product Name <span class="required">*</span></label>
+                            <input type="text" id="product_name" name="product_name" required placeholder="Descriptive product name">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="product_description">Product Description</label>
+                            <textarea id="product_description" name="product_description" placeholder="Detailed product description"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manufacturing Information -->
+                <div class="form-section">
+                    <h3 class="section-title">Manufacturing Information</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="base_unit">Base Unit</label>
+                            <select id="base_unit" name="base_unit">
+                                <option value="EA">EA - Each</option>
+                                <option value="SET">SET - Set</option>
+                                <option value="KIT">KIT - Kit</option>
+                                <option value="BOX">BOX - Box</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="standard_pack_quantity">Standard Pack Quantity</label>
+                            <input type="number" id="standard_pack_quantity" name="standard_pack_quantity" step="0.01" value="1.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="weight_per_unit">Weight Per Unit (lbs)</label>
+                            <input type="number" id="weight_per_unit" name="weight_per_unit" step="0.0001" placeholder="0.0000">
+                        </div>
+                        <div class="form-group">
+                            <label for="product_status">Product Status</label>
+                            <select id="product_status" name="product_status">
+                                <option value="development">Development</option>
+                                <option value="active" selected>Active</option>
+                                <option value="on_hold">On Hold</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Costing Information -->
+                <div class="form-section">
+                    <h3 class="section-title">Costing Information</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="standard_cost">Standard Manufacturing Cost</label>
+                            <input type="number" id="standard_cost" name="standard_cost" step="0.0001" placeholder="0.0000">
+                        </div>
+                        <div class="form-group">
+                            <label for="standard_price">Standard Selling Price</label>
+                            <input type="number" id="standard_price" name="standard_price" step="0.0001" placeholder="0.0000">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part Number Cross-References -->
+                <div class="form-section">
+                    <h3 class="section-title">Part Number Cross-References</h3>
+                    <div class="help-text" style="margin-bottom: 16px;">
+                        Define customer and OEM part numbers that reference this same product. This enables searching and identification across the supply chain.
+                    </div>
+                    
+                    <div id="part-numbers-container">
+                        <div class="part-number-section" id="part-number-template" style="display: none;">
+                            <div class="part-number-grid">
+                                <div>
+                                    <label>Type</label>
+                                    <select class="part-number-type">
+                                        <option value="customer">Customer</option>
+                                        <option value="oem">OEM</option>
+                                        <option value="legacy">Legacy</option>
+                                        <option value="alias">Alias</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Part Number Value</label>
+                                    <input type="text" class="part-number-value" placeholder="Part number">
+                                </div>
+                                <div>
+                                    <label>Company Name</label>
+                                    <input type="text" class="company-name" placeholder="Customer/OEM name">
+                                </div>
+                                <div>
+                                    <label>Priority</label>
+                                    <input type="number" class="priority" value="50" min="1" max="100">
+                                </div>
+                                <div>
+                                    <label>Primary</label>
+                                    <input type="checkbox" class="is-primary">
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-danger remove-part-number">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="add-part-number" class="btn btn-success">Add Part Number Cross-Reference</button>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/api-client.js"></script>
+    <script>
+        let partNumberCounter = 0;
+
+        // Initialize page with authentication check
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await bemsUtils.checkAuth();
+            if (user) {
+                setTimeout(() => bemsUtils.initUserMenu(), 100);
+            }
+            
+            // Add event listeners after DOM is ready
+            document.getElementById('add-part-number').addEventListener('click', addPartNumber);
+            document.getElementById('product-form').addEventListener('submit', handleProductSubmit);
+        });
+
+        function addPartNumber() {
+            partNumberCounter++;
+            const template = document.getElementById('part-number-template');
+            const clone = template.cloneNode(true);
+            clone.id = `part-number-${partNumberCounter}`;
+            clone.style.display = 'block';
+            
+            // Add remove functionality
+            const removeBtn = clone.querySelector('.remove-part-number');
+            removeBtn.addEventListener('click', () => clone.remove());
+            
+            document.getElementById('part-numbers-container').appendChild(clone);
+        }
+
+        // Form submission handler
+        async function handleProductSubmit(e) {
+            e.preventDefault();
+            console.log('Form submitted');
+            
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Creating...';
+            submitButton.disabled = true;
+            
+            try {
+                console.log('Collecting form data...');
+                // Collect form data
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+                console.log('Form data collected:', data);
+                
+                // Collect part numbers
+                const partNumbers = [];
+                const partNumberSections = document.querySelectorAll('.part-number-section:not(#part-number-template)');
+                
+                partNumberSections.forEach(section => {
+                    const type = section.querySelector('.part-number-type').value;
+                    const value = section.querySelector('.part-number-value').value;
+                    const companyName = section.querySelector('.company-name').value;
+                    const priority = parseInt(section.querySelector('.priority').value) || 50;
+                    const isPrimary = section.querySelector('.is-primary').checked;
+                    
+                    if (value.trim()) {
+                        const partNumber = {
+                            part_number_type: type,
+                            part_number_value: value.trim(),
+                            priority: priority,
+                            is_primary: isPrimary
+                        };
+                        
+                        if (type === 'customer') {
+                            partNumber.customer_name = companyName.trim() || null;
+                        } else if (type === 'oem') {
+                            partNumber.oem_name = companyName.trim() || null;
+                        }
+                        
+                        partNumbers.push(partNumber);
+                    }
+                });
+                
+                data.part_numbers = partNumbers;
+                
+                // Clean up numeric fields
+                ['standard_pack_quantity', 'weight_per_unit', 'standard_cost', 'standard_price'].forEach(field => {
+                    if (data[field] === '') {
+                        delete data[field];
+                    }
+                });
+                
+                console.log('Sending API request with data:', data);
+                const response = await bemsAPI.createProduct(data);
+                console.log('API response:', response);
+                
+                if (response.success) {
+                    showSuccess(`Product ${response.internal_part_number} created successfully!`);
+                    
+                    // Clear form after brief delay
+                    setTimeout(() => {
+                        if (confirm('Product created! Would you like to create another product?')) {
+                            e.target.reset();
+                            document.querySelectorAll('.part-number-section:not(#part-number-template)').forEach(el => el.remove());
+                            partNumberCounter = 0;
+                        } else {
+                            window.location.href = '/bems/public/products-list.html';
+                        }
+                    }, 1500);
+                } else {
+                    showError(response.error || 'Failed to create product');
+                }
+                
+            } catch (error) {
+                console.error('Error creating product:', error);
+                showError('Failed to create product: ' + error.message);
+            } finally {
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('error-message').style.display = 'none';
+            successDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+            errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
