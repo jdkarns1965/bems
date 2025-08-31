@@ -190,11 +190,12 @@
             submitBtn.textContent = 'Signing In...';
             
             try {
-                const response = await fetch('simple-login.php', {
+                const response = await fetch('index.php?route=/api/v1/auth/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials: 'same-origin',
                     body: JSON.stringify({
                         clock_number: clockNumber,
                         password: password
@@ -211,7 +212,8 @@
                     localStorage.setItem('bems_user', JSON.stringify(data.user));
                     
                     setTimeout(() => {
-                        window.location.href = '/bems/public/dashboard.html';
+                        const base = new URL('.', window.location.href).pathname;
+                        window.location.href = base + 'dashboard.html';
                     }, 1500);
                 } else {
                     showAlert(data.message || 'Login failed. Please check your credentials.', 'error');

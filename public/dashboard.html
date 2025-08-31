@@ -219,9 +219,9 @@
         </div>
         <div class="nav">
             <a href="dashboard.html" class="active">Dashboard</a>
-            <a href="inventory-simple.html">Inventory</a>
-            <a href="bom-simple.html">BOM</a>
-            <a href="mrp-simple.html">MRP</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="bom.html">BOM</a>
+            <a href="mrp.html">MRP</a>
         </div>
         <div class="user-info">
             <div class="user-badge" id="userBadge">Loading...</div>
@@ -314,21 +314,18 @@
     
     <script>
         // Check authentication on page load
-        window.onload = function() {
-            // Check for stored user data
-            const storedUser = localStorage.getItem('bems_user');
-            
-            if (storedUser) {
-                try {
-                    const userData = JSON.parse(storedUser);
-                    updateUserInterface(userData);
-                } catch (error) {
-                    console.error('Failed to parse user data:', error);
-                    window.location.href = '/bems/public/login.html';
-                }
-            } else {
-                // Redirect to login if not authenticated
-                window.location.href = '/bems/public/login.html';
+        window.onload = async function() {
+            // API-first auth check
+            try {
+                const res = await fetch('index.php?route=/api/v1/auth/status', { credentials: 'same-origin' });
+                if (!res.ok) throw new Error('Unauthenticated');
+                const data = await res.json();
+                if (!data.authenticated) throw new Error('Unauthenticated');
+                updateUserInterface(data.user);
+                // Keep local copy for quick UI reads
+                localStorage.setItem('bems_user', JSON.stringify(data.user));
+            } catch (e) {
+                window.location.href = 'login.html';
             }
         };
         
@@ -347,18 +344,18 @@
         
         async function logout() {
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/auth/logout', {
+                const response = await fetch('index.php?route=/api/v1/auth/logout', {
                     method: 'POST'
                 });
                 
                 // Clear local storage and redirect regardless of response
                 localStorage.removeItem('bems_user');
-                window.location.href = '/bems/public/login.html';
+                window.location.href = 'login.html';
             } catch (error) {
                 console.error('Logout error:', error);
                 // Still redirect to login page
                 localStorage.removeItem('bems_user');
-                window.location.href = '/bems/public/login.html';
+                window.location.href = 'login.html';
             }
         }
         

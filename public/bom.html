@@ -589,18 +589,18 @@
         // Authentication check
         async function checkAuth() {
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/auth/status');
+                const response = await fetch('index.php?route=/api/v1/auth/status', { credentials: 'same-origin' });
                 const result = await response.json();
                 
                 if (response.ok && result.authenticated) {
                     currentUser = result.user;
                     document.getElementById('currentUser').textContent = result.user.username;
                 } else {
-                    window.location.href = '/bems/public/working-login.html';
+                    window.location.href = 'login.html';
                 }
             } catch (error) {
                 console.error('Auth check failed:', error);
-                window.location.href = '/bems/public/working-login.html';
+                window.location.href = 'login.html';
             }
         }
         
@@ -610,7 +610,7 @@
             bomList.innerHTML = '<div class="loading">Loading BOMs...</div>';
             
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/bom', {
+                const response = await fetch('index.php?route=/api/v1/bom', {
                     method: 'GET'
                 });
                 
@@ -661,7 +661,7 @@
             detailContent.innerHTML = '<div class="loading">Loading BOM structure...</div>';
             
             try {
-                const response = await fetch(`/bems/public/index.php?route=/api/v1/bom/${bomId}/structure`);
+                const response = await fetch(`index.php?route=/api/v1/bom/${bomId}/structure`);
                 const result = await response.json();
                 
                 if (result.success && result.data) {
@@ -773,7 +773,7 @@
             const data = Object.fromEntries(formData.entries());
             
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/bom', {
+                const response = await fetch('index.php?route=/api/v1/bom', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -810,7 +810,7 @@
             data.is_phantom = document.getElementById('isPhantom').checked;
             
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/bom', {
+                const response = await fetch('index.php?route=/api/v1/bom', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -840,7 +840,7 @@
             if (!currentBomId) return;
             
             try {
-                const response = await fetch(`/bems/public/index.php?route=/api/v1/bom/${currentBomId}/cost`);
+                const response = await fetch(`index.php?route=/api/v1/bom/${currentBomId}/cost`);
                 const result = await response.json();
                 
                 if (result.success) {
@@ -888,11 +888,11 @@
         // Logout function
         async function logout() {
             try {
-                await fetch('/bems/public/index.php?route=/api/v1/auth/logout', { method: 'POST' });
-                window.location.href = '/bems/public/working-login.html';
+                await fetch('index.php?route=/api/v1/auth/logout', { method: 'POST' });
+                window.location.href = 'login.html';
             } catch (error) {
                 console.error('Logout failed:', error);
-                window.location.href = '/bems/public/working-login.html';
+                window.location.href = 'login.html';
             }
         }
         

@@ -417,25 +417,22 @@
         
         async function checkAuthentication() {
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/auth/status');
-                const data = await response.json();
-                
-                if (response.ok && data.authenticated) {
-                    currentUser = data.user;
-                    document.getElementById('userBadge').textContent = `${data.user.real_name} (${data.user.role_name})`;
-                } else {
-                    window.location.href = '/bems/public/working-login.html';
-                }
-            } catch (error) {
-                console.error('Authentication check failed:', error);
-                window.location.href = '/bems/public/working-login.html';
+                const res = await fetch('index.php?route=/api/v1/auth/status', { credentials: 'same-origin' });
+                if (!res.ok) throw new Error('Unauthenticated');
+                const data = await res.json();
+                if (!data.authenticated) throw new Error('Unauthenticated');
+                currentUser = data.user;
+                document.getElementById('userBadge').textContent = `${data.user.real_name} (${data.user.role_name})`;
+                localStorage.setItem('bems_user', JSON.stringify(data.user));
+            } catch (e) {
+                window.location.href = 'login.html';
             }
         }
         
         async function loadMasterData() {
             try {
                 // Load materials
-                const materialsResponse = await fetch('/bems/public/index.php?route=/api/v1/materials');
+                const materialsResponse = await fetch('api-simple.php?route=materials');
                 const materialsData = await materialsResponse.json();
                 
                 if (materialsResponse.ok) {
@@ -452,7 +449,7 @@
                 }
                 
                 // Load locations  
-                const locationsResponse = await fetch('/bems/public/index.php?route=/api/v1/locations');
+                const locationsResponse = await fetch('api-simple.php?route=locations');
                 const locationsData = await locationsResponse.json();
                 
                 if (locationsResponse.ok) {
@@ -474,7 +471,7 @@
         
         async function loadInventory() {
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/inventory');
+                const response = await fetch('/bems/public/api-simple.php?route=inventory');
                 const data = await response.json();
                 
                 if (response.ok) {
@@ -551,7 +548,7 @@
             });
             
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/inventory/receive', {
+                const response = await fetch('index.php?route=/api/v1/inventory/receive', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -614,14 +611,9 @@
             alert('Phase 3 (MRP) module will be available after Phase 2 deployment.');
         }
         
-        async function logout() {
-            try {
-                await fetch('/bems/public/index.php?route=/api/v1/auth/logout', { method: 'POST' });
-                window.location.href = '/bems/public/working-login.html';
-            } catch (error) {
-                console.error('Logout error:', error);
-                window.location.href = '/bems/public/working-login.html';
-            }
+        function logout() {
+            localStorage.removeItem('bems_user');
+            window.location.href = 'login.html';
         }
     </script>
 </body>

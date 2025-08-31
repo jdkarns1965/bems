@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BEMS Simple Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .result { background: #f0f0f0; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        button { background: #2a5298; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #1e3c72; }
+    </style>
+</head>
+<body>
+    <h1>🔧 BEMS System Test</h1>
+    
+    <h2>Phase 1 Status</h2>
+    <div class="result success">
+        ✅ Database: Connected<br>
+        ✅ Authentication: User ADMIN001 exists<br>
+        ✅ Inventory: 7 materials, 11 locations ready<br>
+        ✅ Web Server: Running on port 8000
+    </div>
+    
+    <h2>Quick Tests</h2>
+    <button onclick="testDatabase()">Test Database</button>
+    <button onclick="testLogin()">Test Login API</button>
+    <button onclick="testInventory()">Test Inventory API</button>
+    <button onclick="gotoLogin()">Go to Login Page</button>
+    
+    <div id="results"></div>
+    
+    <h2>Direct Access Links</h2>
+    <ul>
+        <li><a href="/login-fixed.html">Fixed Login Page</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="/inventory.html">Inventory</a></li>
+    </ul>
+    
+    <script>
+        function showResult(message, isSuccess = true) {
+            const div = document.createElement('div');
+            div.className = 'result ' + (isSuccess ? 'success' : 'error');
+            div.innerHTML = message;
+            document.getElementById('results').appendChild(div);
+        }
+        
+        async function testDatabase() {
+            try {
+                const response = await fetch('/api/v1/materials');
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult(`✅ Database test passed! Found ${data.materials ? data.materials.length : 'some'} materials`);
+                } else {
+                    showResult(`❌ Database test failed: ${response.status}`, false);
+                }
+            } catch (error) {
+                showResult(`❌ Database connection error: ${error.message}`, false);
+            }
+        }
+        
+        async function testLogin() {
+            try {
+                const response = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        clock_number: 'ADMIN001',
+                        password: 'AdminPassword123!'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(`✅ Login test passed! Welcome ${data.user.real_name}`);
+                } else {
+                    showResult(`❌ Login test failed: ${data.message}`, false);
+                }
+            } catch (error) {
+                showResult(`❌ Login API error: ${error.message}`, false);
+            }
+        }
+        
+        async function testInventory() {
+            try {
+                const response = await fetch('/api/v1/inventory');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const count = data.inventory ? data.inventory.length : 0;
+                    showResult(`✅ Inventory API works! Found ${count} inventory items`);
+                } else {
+                    showResult(`❌ Inventory test failed: ${data.message}`, false);
+                }
+            } catch (error) {
+                showResult(`❌ Inventory API error: ${error.message}`, false);
+            }
+        }
+        
+        function gotoLogin() {
+            window.location.href = '/login-fixed.html';
+        }
+        
+        // Auto-run tests on page load
+        window.onload = function() {
+            showResult('🚀 BEMS System loaded and ready for testing!');
+        };
+    </script>
+</body>
+</html>

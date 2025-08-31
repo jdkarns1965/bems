@@ -10,7 +10,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 # Route API calls to index.php - handle both /bems/api/ and /api/ patterns
 RewriteRule ^api/(.*)$ public/index.php?route=api/$1 [QSA,L]
 
-# Also handle direct /bems/api/ calls for compatibility
+# Handle /bems/api/ calls by removing the bems prefix
 RewriteRule ^bems/api/(.*)$ public/index.php?route=api/$1 [QSA,L]
 
 # Default to public directory

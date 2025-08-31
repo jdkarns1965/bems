@@ -771,18 +771,18 @@
         // Authentication check
         async function checkAuth() {
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/auth/status');
+                const response = await fetch('index.php?route=/api/v1/auth/status', { credentials: 'same-origin' });
                 const result = await response.json();
                 
                 if (response.ok && result.authenticated) {
                     currentUser = result.user;
                     document.getElementById('currentUser').textContent = result.user.username;
                 } else {
-                    window.location.href = '/bems/public/working-login.html';
+                    window.location.href = 'login.html';
                 }
             } catch (error) {
                 console.error('Auth check failed:', error);
-                window.location.href = '/bems/public/working-login.html';
+                window.location.href = 'login.html';
             }
         }
         
@@ -833,7 +833,7 @@
         // Load latest planning run status
         async function loadLatestRunStatus() {
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/mrp/latest');
+                const response = await fetch('index.php?route=/api/v1/mrp/latest');
                 const result = await response.json();
                 
                 const statusContent = document.getElementById('runStatusContent');
@@ -872,8 +872,8 @@
         async function loadPlanningStatistics() {
             try {
                 const [actionResponse, orderResponse] = await Promise.all([
-                    fetch('/bems/public/index.php?route=/api/v1/mrp/messages'),
-                    fetch('/bems/public/index.php?route=/api/v1/mrp/orders')
+                    fetch('index.php?route=/api/v1/mrp/messages'),
+                    fetch('index.php?route=/api/v1/mrp/orders')
                 ]);
                 
                 const actionResult = await actionResponse.json();
@@ -906,7 +906,7 @@
             runButton.innerHTML = '⏳ Running MRP...';
             
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/mrp', {
+                const response = await fetch('index.php?route=/api/v1/mrp', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -943,7 +943,7 @@
             table.style.display = 'none';
             
             try {
-                let url = '/bems/public/index.php?route=/api/v1/mrp/messages';
+                let url = 'index.php?route=/api/v1/mrp/messages';
                 if (currentFilters.action_required) {
                     url += '&action_required=' + currentFilters.action_required;
                 }
@@ -987,7 +987,7 @@
             table.style.display = 'none';
             
             try {
-                let url = '/bems/public/index.php?route=/api/v1/mrp/orders';
+                let url = 'index.php?route=/api/v1/mrp/orders';
                 if (currentFilters.order_type) {
                     url += '&order_type=' + currentFilters.order_type;
                 }
@@ -1038,7 +1038,7 @@
             table.style.display = 'none';
             
             try {
-                let url = '/bems/public/index.php?route=/api/v1/mrp?action=requirements';
+                let url = 'index.php?route=/api/v1/mrp?action=requirements';
                 if (currentFilters.item_number) {
                     url += '&item_number=' + currentFilters.item_number;
                 }
@@ -1081,7 +1081,7 @@
             table.style.display = 'none';
             
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/mrp/mps');
+                const response = await fetch('index.php?route=/api/v1/mrp/mps');
                 const result = await response.json();
                 
                 if (result.success) {
@@ -1152,7 +1152,7 @@
             data.firm_planned_flag = document.getElementById('mpsFirm').checked;
             
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/mrp', {
+                const response = await fetch('index.php?route=/api/v1/mrp', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1182,7 +1182,7 @@
             if (!orderId) return;
             
             try {
-                const response = await fetch('/bems/public/index.php?route=/api/v1/mrp', {
+                const response = await fetch('index.php?route=/api/v1/mrp', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1227,11 +1227,11 @@
         // Logout function
         async function logout() {
             try {
-                await fetch('/bems/public/index.php?route=/api/v1/auth/logout', { method: 'POST' });
-                window.location.href = '/bems/public/working-login.html';
+                await fetch('index.php?route=/api/v1/auth/logout', { method: 'POST' });
+                window.location.href = 'login.html';
             } catch (error) {
                 console.error('Logout failed:', error);
-                window.location.href = '/bems/public/working-login.html';
+                window.location.href = 'login.html';
             }
         }
         
