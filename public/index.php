@@ -99,6 +99,18 @@ class ApiRouter {
     private function registerRoutes() {
         $apiBase = AppConfig::API_BASE_URL;
         
+        // Base route - redirect to login
+        $this->get('/', function() {
+            header('Location: /bems/public/login.html');
+            exit;
+        });
+        
+        // Also handle /bems/public/ directly
+        $this->get('/bems/public/', function() {
+            header('Location: /bems/public/login.html');
+            exit;
+        });
+        
         // Authentication routes
         $this->post("$apiBase/auth/login", [AuthController::class, 'login'], [
             [RateLimitMiddleware::class, 'loginRateLimit']
